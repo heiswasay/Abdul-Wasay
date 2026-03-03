@@ -307,8 +307,7 @@ async function startServer() {
   });
 
   // Explicitly serve the public/images directory
-  // This ensures that both pre-existing and newly uploaded images are accessible
-  app.use("/images", express.static(path.join(__dirname, "public", "images")));
+  app.use("/images", express.static(path.resolve("public/images")));
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
