@@ -230,7 +230,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <img 
-              src="/images/profile.png" 
+              src={dynamicSettings.about_image ? `/images/${dynamicSettings.about_image}` : "/images/profile.png"} 
               alt="Logo" 
               className="w-10 h-10 object-cover rounded-full border border-emerald-500/30"
               referrerPolicy="no-referrer"

@@ -60,7 +60,7 @@ const initialSettings = [
   { key: "instagram", value: "" },
   { key: "whatsapp", value: "" },
   { key: "about_text", value: "I am a results-driven marketing professional with expertise in brand strategy, digital growth, and multi-industry management. With over 5 years of experience, I've specialized in building scalable brands across tech, skincare, hospitality, and services through data-driven marketing solutions." },
-  { key: "about_image", value: "" }
+  { key: "about_image", value: "profile.png" }
 ];
 const upsertSetting = db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)");
 initialSettings.forEach(s => upsertSetting.run(s.key, s.value));
