@@ -50,23 +50,20 @@ try {
   // Column already exists, ignore error
 }
 
-// Seed initial settings if empty
-const settingsCount = db.prepare("SELECT COUNT(*) as count FROM settings").get() as { count: number };
-if (settingsCount.count === 0) {
-  const initialSettings = [
-    { key: "email", value: "wasey351@gmail.com" },
-    { key: "phone1", value: "03411236082" },
-    { key: "phone2", value: "03102454778" },
-    { key: "linkedin", value: "https://www.linkedin.com/in/heiswasay/" },
-    { key: "facebook", value: "" },
-    { key: "instagram", value: "" },
-    { key: "whatsapp", value: "" },
-    { key: "about_text", value: "I am a results-driven marketing professional with expertise in brand strategy, digital growth, and multi-industry management. With over 5 years of experience, I've specialized in building scalable brands across tech, skincare, hospitality, and services through data-driven marketing solutions." },
-    { key: "about_image", value: "" }
-  ];
-  const insertSetting = db.prepare("INSERT INTO settings (key, value) VALUES (?, ?)");
-  initialSettings.forEach(s => insertSetting.run(s.key, s.value));
-}
+// Seed/Update initial settings
+const initialSettings = [
+  { key: "email", value: "wasey351@gmail.com" },
+  { key: "phone1", value: "+92 (341) 1236082" },
+  { key: "phone2", value: "+92 (310) 2454778" },
+  { key: "linkedin", value: "https://www.linkedin.com/in/heiswasay/" },
+  { key: "facebook", value: "" },
+  { key: "instagram", value: "" },
+  { key: "whatsapp", value: "" },
+  { key: "about_text", value: "I am a results-driven marketing professional with expertise in brand strategy, digital growth, and multi-industry management. With over 5 years of experience, I've specialized in building scalable brands across tech, skincare, hospitality, and services through data-driven marketing solutions." },
+  { key: "about_image", value: "" }
+];
+const upsertSetting = db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)");
+initialSettings.forEach(s => upsertSetting.run(s.key, s.value));
 
 // Seed initial skills data if empty
 const skillCount = db.prepare("SELECT COUNT(*) as count FROM skills").get() as { count: number };
@@ -108,6 +105,44 @@ if (experienceCount.count === 0) {
     insertExp.run(exp.role, exp.company, exp.period, exp.description, exp.details);
   });
 }
+
+// Seed/Update initial images
+const initialImages = [
+  { filename: "agnleads.PNG", section: "achievements", title: "Orders Generation For Restaurant" },
+  { filename: "bzleads.PNG", section: "achievements", title: "Leads Generation For Real Estate" },
+  { filename: "ceressales.png", section: "achievements", title: "Sales For SkinCare Brands" },
+  { filename: "xpcleads.png", section: "achievements", title: "Leads Generation For Cleaning Company" },
+  { filename: "ceresgoogle.png", section: "achievements", title: "SkinCare Brand Traffic" },
+  { filename: "ncgoogle.png", section: "achievements", title: "Application Installs" },
+  { filename: "gfm.png", section: "content", title: "Security Company Instagram" },
+  { filename: "gfm1.jpg", section: "content", title: "Post" },
+  { filename: "gfm2.jpg", section: "content", title: "Post" },
+  { filename: "gfm3.jpg", section: "content", title: "Post" },
+  { filename: "agn.png", section: "content", title: "Restaurant Instagram" },
+  { filename: "agn1.jpg", section: "content", title: "Post" },
+  { filename: "agn2.jpg", section: "content", title: "Post" },
+  { filename: "agn3.jpg", section: "content", title: "Post" },
+  { filename: "nextchat.png", section: "content", title: "Application Instagram" },
+  { filename: "nextchat1.jpg", section: "content", title: "Post" },
+  { filename: "nextchat2.jpg", section: "content", title: "Post" },
+  { filename: "nextchat3.jpg", section: "content", title: "Post" },
+  { filename: "ss.png", section: "content", title: "IT Solution Company Instagram" },
+  { filename: "ss1.jpg", section: "content", title: "Post" },
+  { filename: "ss2.jpg", section: "content", title: "Post" },
+  { filename: "ss3.jpg", section: "content", title: "Post" },
+  { filename: "hero.jpg", section: "hero", title: "Main Hero" }
+];
+const insertImg = db.prepare("INSERT INTO images (filename, section, title) VALUES (?, ?, ?)");
+const updateImg = db.prepare("UPDATE images SET title = ? WHERE filename = ?");
+
+initialImages.forEach(img => {
+  const existing = db.prepare("SELECT id FROM images WHERE filename = ?").get(img.filename);
+  if (existing) {
+    updateImg.run(img.title, img.filename);
+  } else {
+    insertImg.run(img.filename, img.section, img.title);
+  }
+});
 
 async function startServer() {
   const app = express();

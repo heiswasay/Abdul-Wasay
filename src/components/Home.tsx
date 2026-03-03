@@ -56,6 +56,38 @@ const SectionHeading = ({ children, subtitle }: { children: React.ReactNode, sub
   </div>
 );
 
+// --- STATIC CONTENT CONFIGURATION ---
+// You can easily add/rename images and titles here. 
+// These will show up if the database is empty.
+const STATIC_FALLBACK = {
+  achievements: [
+    { filename: "agnleads.PNG", title: "Orders Generation For Restaurant" },
+    { filename: "bzleads.PNG", title: "Leads Generation For Real Estate" },
+    { filename: "ceressales.png", title: "Sales For SkinCare Brands" },
+    { filename: "xpcleads.png", title: "Leads Generation For Cleaning Company" },
+    { filename: "ceresgoogle.png", title: "SkinCare Brand Traffic" },
+    { filename: "ncgoogle.png", title: "Application Installs" },
+  ],
+  content: [
+    { filename: "gfm.png", title: "Security Company Instagram" },
+    { filename: "gfm1.jpg", title: "Post" },
+    { filename: "gfm2.jpg", title: "Post" },
+    { filename: "gfm3.jpg", title: "Post" },
+    { filename: "agn.png", title: "Restaurant Instagram" },
+    { filename: "agn1.jpg", title: "Post" },
+    { filename: "agn2.jpg", title: "Post" },
+    { filename: "agn3.jpg", title: "Post" },
+    { filename: "nextchat.png", title: "Application Instagram" },
+    { filename: "nextchat1.jpg", title: "Post" },
+    { filename: "nextchat2.jpg", title: "Post" },
+    { filename: "nextchat3.jpg", title: "Post" },
+    { filename: "ss.png", title: "IT Solution Company Instagram" },
+    { filename: "ss1.jpg", title: "Post" },
+    { filename: "ss2.jpg", title: "Post" },
+    { filename: "ss3.jpg", title: "Post" },
+  ]
+};
+
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<{ url: string, title?: string } | null>(null);
   const [dynamicImages, setDynamicImages] = useState<any[]>([]);
@@ -64,6 +96,7 @@ export default function Home() {
   const [dynamicSettings, setDynamicSettings] = useState<any>({});
   const [achievementIndex, setAchievementIndex] = useState(0);
   const [contentIndex, setContentIndex] = useState(0);
+  const [itemsPerView, setItemsPerView] = useState(4);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -87,10 +120,30 @@ export default function Home() {
     fetch("/api/settings")
       .then(res => res.json())
       .then(data => setDynamicSettings(data));
+
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setItemsPerView(1);
+      } else if (window.innerWidth < 1024) {
+        setItemsPerView(2);
+      } else {
+        setItemsPerView(4);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const getImagesForSection = (section: string) => {
-    return dynamicImages.filter(img => img.section === section);
+    const images = dynamicImages.filter(img => img.section === section);
+    if (images.length > 0) return images;
+    
+    // Use fallback if no dynamic images exist
+    if (section === "achievements") return STATIC_FALLBACK.achievements;
+    if (section === "content") return STATIC_FALLBACK.content;
+    return [];
   };
 
   const skills = [
@@ -202,14 +255,14 @@ export default function Home() {
             <img 
               src={`/images/${getImagesForSection("hero")[0].filename}`}
               alt="Hero" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
               referrerPolicy="no-referrer"
             />
           ) : (
             <img 
               src="./images/hero.jpg" 
               alt="Futuristic Marketing Analytics" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
               referrerPolicy="no-referrer"
             />
           )}
@@ -330,7 +383,7 @@ export default function Home() {
             <div className="overflow-hidden">
               <motion.div 
                 className="flex gap-6"
-                animate={{ x: `-${achievementIndex * (100 / 4)}%` }}
+                animate={{ x: `-${achievementIndex * (100 / itemsPerView)}%` }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
                 {getImagesForSection("achievements").map((img, idx) => (
@@ -345,9 +398,9 @@ export default function Home() {
                         className="w-full h-full object-cover grayscale group-hover/img:grayscale-0 transition-all duration-500"
                         referrerPolicy="no-referrer"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity flex items-end p-4">
-                        <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest">{img.title || "Achievement"}</p>
-                      </div>
+                    </div>
+                    <div className="px-2">
+                      <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest">{img.title || "Achievement"}</p>
                     </div>
                   </div>
                 ))}
@@ -360,16 +413,16 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {getImagesForSection("achievements").length > 4 && (
+            {getImagesForSection("achievements").length > itemsPerView && (
               <>
                 <button 
-                  onClick={() => setAchievementIndex(prev => Math.max(0, prev - 1))}
+                  onClick={() => setAchievementIndex(prev => prev === 0 ? Math.max(0, getImagesForSection("achievements").length - itemsPerView) : prev - 1)}
                   className="absolute left-[-20px] top-1/2 -translate-y-1/2 w-12 h-12 glass rounded-full flex items-center justify-center text-white hover:text-emerald-500 transition-all z-10 opacity-0 group-hover:opacity-100"
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
                 <button 
-                  onClick={() => setAchievementIndex(prev => Math.min(getImagesForSection("achievements").length - 4, prev + 1))}
+                  onClick={() => setAchievementIndex(prev => prev >= getImagesForSection("achievements").length - itemsPerView ? 0 : prev + 1)}
                   className="absolute right-[-20px] top-1/2 -translate-y-1/2 w-12 h-12 glass rounded-full flex items-center justify-center text-white hover:text-emerald-500 transition-all z-10 opacity-0 group-hover:opacity-100"
                 >
                   <ChevronRight className="w-6 h-6" />
@@ -386,7 +439,7 @@ export default function Home() {
             <div className="overflow-hidden">
               <motion.div 
                 className="flex gap-4"
-                animate={{ x: `-${contentIndex * (100 / 4)}%` }}
+                animate={{ x: `-${contentIndex * (100 / itemsPerView)}%` }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
                 {getImagesForSection("content").map((img, idx) => (
@@ -404,9 +457,11 @@ export default function Home() {
                       />
                     </motion.div>
                     {img.title && (
-                      <p className="text-[10px] font-medium text-white/40 uppercase tracking-widest text-center">
-                        {img.title}
-                      </p>
+                      <div className="px-2">
+                        <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest text-center">
+                          {img.title}
+                        </p>
+                      </div>
                     )}
                   </div>
                 ))}
@@ -419,16 +474,16 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {getImagesForSection("content").length > 4 && (
+            {getImagesForSection("content").length > itemsPerView && (
               <>
                 <button 
-                  onClick={() => setContentIndex(prev => Math.max(0, prev - 1))}
+                  onClick={() => setContentIndex(prev => prev === 0 ? Math.max(0, getImagesForSection("content").length - itemsPerView) : prev - 1)}
                   className="absolute left-[-20px] top-1/2 -translate-y-1/2 w-12 h-12 glass rounded-full flex items-center justify-center text-white hover:text-emerald-500 transition-all z-10 opacity-0 group-hover:opacity-100"
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
                 <button 
-                  onClick={() => setContentIndex(prev => Math.min(getImagesForSection("content").length - 4, prev + 1))}
+                  onClick={() => setContentIndex(prev => prev >= getImagesForSection("content").length - itemsPerView ? 0 : prev + 1)}
                   className="absolute right-[-20px] top-1/2 -translate-y-1/2 w-12 h-12 glass rounded-full flex items-center justify-center text-white hover:text-emerald-500 transition-all z-10 opacity-0 group-hover:opacity-100"
                 >
                   <ChevronRight className="w-6 h-6" />
@@ -592,7 +647,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12">
             <div className="space-y-8">
               <p className="text-xl text-white/60">
-                Ready to take your digital presence to the next level? Let's discuss how we can grow your brand together.
+                Ready to take your digital presence to the next level? Let's discuss how I can grow your brand together.
               </p>
               <div className="space-y-4">
                 {dynamicSettings.email && (
