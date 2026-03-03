@@ -230,7 +230,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <img 
-              src="./images/profile.png" 
+              src="/images/profile.png" 
               alt="Logo" 
               className="w-10 h-10 object-cover rounded-full border border-emerald-500/30"
               referrerPolicy="no-referrer"
@@ -260,7 +260,7 @@ export default function Home() {
             />
           ) : (
             <img 
-              src="./images/hero.jpg" 
+              src="/images/hero.jpg" 
               alt="Futuristic Marketing Analytics" 
               className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
               referrerPolicy="no-referrer"
@@ -340,7 +340,7 @@ export default function Home() {
               <div className="absolute -inset-4 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-1000"></div>
               <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border border-white/10 glass p-2">
                 <img 
-                  src={dynamicSettings.about_image ? `/images/${dynamicSettings.about_image}` : "./images/profile.png"} 
+                  src={dynamicSettings.about_image ? `/images/${dynamicSettings.about_image}` : "/images/profile.png"} 
                   alt="Abdul Wasay" 
                   className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700"
                   referrerPolicy="no-referrer"

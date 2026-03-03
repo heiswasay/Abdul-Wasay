@@ -307,7 +307,7 @@ async function startServer() {
   });
 
   // Serve static images
-  app.use("/images", express.static(path.join(__dirname, "images")));
+  app.use("/images", express.static(path.join(__dirname, "public", "images")));
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
