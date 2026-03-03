@@ -153,9 +153,9 @@ async function startServer() {
   // Multer configuration
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      const dir = path.join(__dirname, "images");
+      const dir = path.join(__dirname, "public", "images");
       if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
+        fs.mkdirSync(dir, { recursive: true });
       }
       cb(null, dir);
     },
@@ -217,7 +217,7 @@ async function startServer() {
       const image = db.prepare("SELECT filename FROM images WHERE id = ?").get(Number(id)) as { filename: string } | undefined;
       
       if (image) {
-        const filePath = path.join(__dirname, "images", image.filename);
+        const filePath = path.join(__dirname, "public", "images", image.filename);
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
         }
@@ -305,9 +305,6 @@ async function startServer() {
     
     res.json({ success: true });
   });
-
-  // Serve static images
-  app.use("/images", express.static(path.join(__dirname, "public", "images")));
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
