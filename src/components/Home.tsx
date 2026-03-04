@@ -105,6 +105,7 @@ export default function Home() {
   });
 
   useEffect(() => {
+    /*
     fetch("/api/images")
       .then(res => res.json())
       .then(data => setDynamicImages(data));
@@ -120,6 +121,7 @@ export default function Home() {
     fetch("/api/settings")
       .then(res => res.json())
       .then(data => setDynamicSettings(data));
+    */
 
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -740,7 +742,7 @@ export default function Home() {
         <p>© {new Date().getFullYear()} Abdul Wasay. All rights reserved.</p>
         <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.3em]">Crafted for the future</p>
         
-        <div className="mt-8">
+        {/* <div className="mt-8">
           <Link 
             to="/login" 
             className="inline-flex items-center space-x-2 text-white/20 hover:text-emerald-500 transition-colors"
@@ -748,7 +750,7 @@ export default function Home() {
             <Settings className="w-4 h-4" />
             <span>Admin Portal</span>
           </Link>
-        </div>
+        </div> */}
       </footer>
 
       {/* Lightbox */}
