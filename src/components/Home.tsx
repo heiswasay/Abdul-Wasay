@@ -62,10 +62,10 @@ const SectionHeading = ({ children, subtitle }: { children: React.ReactNode, sub
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<{ url: string, title?: string } | null>(null);
-  const [dynamicImages, setDynamicImages] = useState<any[]>(INITIAL_DATA.images);
-  const [dynamicExperiences, setDynamicExperiences] = useState<any[]>(INITIAL_DATA.experience);
-  const [dynamicSkills, setDynamicSkills] = useState<any[]>(INITIAL_DATA.skills);
-  const [dynamicSettings, setDynamicSettings] = useState<any>(INITIAL_DATA.settings);
+  const [dynamicImages] = useState<any[]>(INITIAL_DATA.images);
+  const [dynamicExperiences] = useState<any[]>(INITIAL_DATA.experience);
+  const [dynamicSkills] = useState<any[]>(INITIAL_DATA.skills);
+  const [dynamicSettings] = useState<any>(INITIAL_DATA.settings);
   const [achievementIndex, setAchievementIndex] = useState(0);
   const [contentIndex, setContentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
@@ -77,27 +77,8 @@ export default function Home() {
   });
 
   useEffect(() => {
-    // Try to fetch dynamic data, but keep initial data if it fails
-    fetch("/api/images")
-      .then(res => res.ok ? res.json() : Promise.reject("API not available"))
-      .then(data => setDynamicImages(data))
-      .catch(err => console.log("Using static images fallback"));
+    // API fetching disabled - using static files directly
     
-    fetch("/api/experience")
-      .then(res => res.ok ? res.json() : Promise.reject("API not available"))
-      .then(data => setDynamicExperiences(data))
-      .catch(err => console.log("Using static experience fallback"));
-
-    fetch("/api/skills")
-      .then(res => res.ok ? res.json() : Promise.reject("API not available"))
-      .then(data => setDynamicSkills(data))
-      .catch(err => console.log("Using static skills fallback"));
-
-    fetch("/api/settings")
-      .then(res => res.ok ? res.json() : Promise.reject("API not available"))
-      .then(data => setDynamicSettings(data))
-      .catch(err => console.log("Using static settings fallback"));
-
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setItemsPerView(1);
@@ -720,7 +701,8 @@ export default function Home() {
         <p>© {new Date().getFullYear()} Abdul Wasay. All rights reserved.</p>
         <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.3em]">Crafted for the future</p>
         
-        <div className="mt-8">
+        {/* Admin Portal link disabled temporarily */}
+        {/* <div className="mt-8">
           <Link 
             to="/login" 
             className="inline-flex items-center space-x-2 text-white/20 hover:text-emerald-500 transition-colors"
@@ -728,7 +710,7 @@ export default function Home() {
             <Settings className="w-4 h-4" />
             <span>Admin Portal</span>
           </Link>
-        </div>
+        </div> */}
       </footer>
 
       {/* Lightbox */}
