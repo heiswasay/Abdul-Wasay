@@ -24,6 +24,7 @@ import {
   MessageCircle
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { INITIAL_DATA } from "../data";
 
 const SectionHeading = ({ children, subtitle }: { children: React.ReactNode, subtitle?: string }) => (
   <div className="mb-12">
@@ -57,43 +58,14 @@ const SectionHeading = ({ children, subtitle }: { children: React.ReactNode, sub
 );
 
 // --- STATIC CONTENT CONFIGURATION ---
-// You can easily add/rename images and titles here. 
-// These will show up if the database is empty.
-const STATIC_FALLBACK = {
-  achievements: [
-    { filename: "agnleads.PNG", title: "Orders Generation For Restaurant" },
-    { filename: "bzleads.PNG", title: "Leads Generation For Real Estate" },
-    { filename: "ceressales.png", title: "Sales For SkinCare Brands" },
-    { filename: "xpcleads.png", title: "Leads Generation For Cleaning Company" },
-    { filename: "ceresgoogle.png", title: "SkinCare Brand Traffic" },
-    { filename: "ncgoogle.png", title: "Application Installs" },
-  ],
-  content: [
-    { filename: "gfm.png", title: "Security Company Instagram" },
-    { filename: "gfm1.jpg", title: "Post" },
-    { filename: "gfm2.jpg", title: "Post" },
-    { filename: "gfm3.jpg", title: "Post" },
-    { filename: "agn.png", title: "Restaurant Instagram" },
-    { filename: "agn1.jpg", title: "Post" },
-    { filename: "agn2.jpg", title: "Post" },
-    { filename: "agn3.jpg", title: "Post" },
-    { filename: "nextchat.png", title: "Application Instagram" },
-    { filename: "nextchat1.jpg", title: "Post" },
-    { filename: "nextchat2.jpg", title: "Post" },
-    { filename: "nextchat3.jpg", title: "Post" },
-    { filename: "ss.png", title: "IT Solution Company Instagram" },
-    { filename: "ss1.jpg", title: "Post" },
-    { filename: "ss2.jpg", title: "Post" },
-    { filename: "ss3.jpg", title: "Post" },
-  ]
-};
+// Removed STATIC_FALLBACK as we now use INITIAL_DATA from src/data.ts
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<{ url: string, title?: string } | null>(null);
-  const [dynamicImages, setDynamicImages] = useState<any[]>([]);
-  const [dynamicExperiences, setDynamicExperiences] = useState<any[]>([]);
-  const [dynamicSkills, setDynamicSkills] = useState<any[]>([]);
-  const [dynamicSettings, setDynamicSettings] = useState<any>({});
+  const [dynamicImages, setDynamicImages] = useState<any[]>(INITIAL_DATA.images);
+  const [dynamicExperiences, setDynamicExperiences] = useState<any[]>(INITIAL_DATA.experience);
+  const [dynamicSkills, setDynamicSkills] = useState<any[]>(INITIAL_DATA.skills);
+  const [dynamicSettings, setDynamicSettings] = useState<any>(INITIAL_DATA.settings);
   const [achievementIndex, setAchievementIndex] = useState(0);
   const [contentIndex, setContentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
@@ -105,21 +77,26 @@ export default function Home() {
   });
 
   useEffect(() => {
+    // Try to fetch dynamic data, but keep initial data if it fails
     fetch("/api/images")
-      .then(res => res.json())
-      .then(data => setDynamicImages(data));
+      .then(res => res.ok ? res.json() : Promise.reject("API not available"))
+      .then(data => setDynamicImages(data))
+      .catch(err => console.log("Using static images fallback"));
     
     fetch("/api/experience")
-      .then(res => res.json())
-      .then(data => setDynamicExperiences(data));
+      .then(res => res.ok ? res.json() : Promise.reject("API not available"))
+      .then(data => setDynamicExperiences(data))
+      .catch(err => console.log("Using static experience fallback"));
 
     fetch("/api/skills")
-      .then(res => res.json())
-      .then(data => setDynamicSkills(data));
+      .then(res => res.ok ? res.json() : Promise.reject("API not available"))
+      .then(data => setDynamicSkills(data))
+      .catch(err => console.log("Using static skills fallback"));
 
     fetch("/api/settings")
-      .then(res => res.json())
-      .then(data => setDynamicSettings(data));
+      .then(res => res.ok ? res.json() : Promise.reject("API not available"))
+      .then(data => setDynamicSettings(data))
+      .catch(err => console.log("Using static settings fallback"));
 
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -138,12 +115,15 @@ export default function Home() {
 
   const getImagesForSection = (section: string) => {
     const images = dynamicImages.filter(img => img.section === section);
-    if (images.length > 0) return images;
-    
-    // Use fallback if no dynamic images exist
-    if (section === "achievements") return STATIC_FALLBACK.achievements;
-    if (section === "content") return STATIC_FALLBACK.content;
-    return [];
+    return images;
+  };
+
+  const getImageUrl = (filename: string) => {
+    if (!filename) return "/images/profile.png";
+    // If it's already a full URL, return it
+    if (filename.startsWith("http")) return filename;
+    // Otherwise, assume it's in our images folder
+    return `/images/${filename}`;
   };
 
   const skills = [
@@ -230,7 +210,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <img 
-              src={dynamicSettings.about_image ? `/images/${dynamicSettings.about_image}` : "/images/profile.png"} 
+              src={getImageUrl(dynamicSettings.about_image)} 
               alt="Logo" 
               className="w-10 h-10 object-cover rounded-full border border-emerald-500/30"
               referrerPolicy="no-referrer"
@@ -253,14 +233,14 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           {getImagesForSection("hero").length > 0 ? (
             <img 
-              src={`/images/${getImagesForSection("hero")[0].filename}`}
+              src={getImageUrl(getImagesForSection("hero")[0].filename)}
               alt="Hero" 
               className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
               referrerPolicy="no-referrer"
             />
           ) : (
             <img 
-              src="/images/hero.jpg" 
+              src={getImageUrl("hero.jpg")} 
               alt="Futuristic Marketing Analytics" 
               className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
               referrerPolicy="no-referrer"
@@ -340,7 +320,7 @@ export default function Home() {
               <div className="absolute -inset-4 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-1000"></div>
               <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border border-white/10 glass p-2">
                 <img 
-                  src={dynamicSettings.about_image ? `/images/${dynamicSettings.about_image}` : "/images/profile.png"} 
+                  src={getImageUrl(dynamicSettings.about_image)} 
                   alt="Abdul Wasay" 
                   className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700"
                   referrerPolicy="no-referrer"
@@ -390,10 +370,10 @@ export default function Home() {
                   <div key={idx} className="min-w-[calc(100%-18px)] md:min-w-[calc(50%-18px)] lg:min-w-[calc(25%-18px)] space-y-3">
                     <div 
                       className="relative aspect-video rounded-2xl overflow-hidden glass group/img cursor-pointer"
-                      onClick={() => setSelectedImage({ url: `/images/${img.filename}`, title: img.title })}
+                      onClick={() => setSelectedImage({ url: getImageUrl(img.filename), title: img.title })}
                     >
                       <img 
-                        src={`/images/${img.filename}`} 
+                        src={getImageUrl(img.filename)} 
                         alt={img.title || "Achievement"} 
                         className="w-full h-full object-cover grayscale group-hover/img:grayscale-0 transition-all duration-500"
                         referrerPolicy="no-referrer"
@@ -447,10 +427,10 @@ export default function Home() {
                     <motion.div
                       whileHover={{ scale: 1.02 }}
                       className="aspect-square rounded-2xl overflow-hidden glass cursor-pointer group/img"
-                      onClick={() => setSelectedImage({ url: `/images/${img.filename}`, title: img.title })}
+                      onClick={() => setSelectedImage({ url: getImageUrl(img.filename), title: img.title })}
                     >
                       <img 
-                        src={`/images/${img.filename}`} 
+                        src={getImageUrl(img.filename)} 
                         alt={img.title || `Content ${idx}`} 
                         className="w-full h-full object-cover grayscale group-hover/img:grayscale-0 transition-all duration-500"
                         referrerPolicy="no-referrer"

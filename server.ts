@@ -307,7 +307,7 @@ async function startServer() {
   });
 
   // Explicitly serve the public/images directory
-  app.use("/images", express.static(path.resolve("public/images")));
+  app.use("/images", express.static(path.join(__dirname, "public", "images")));
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
