@@ -254,7 +254,7 @@ export default function Home() {
               href="#contact" 
               className="px-8 py-4 bg-emerald-500 text-black font-bold rounded-full hover:bg-emerald-400 transition-all hover:scale-105 inline-flex items-center group"
             >
-              LET'S CONNECT
+              CONNECT WITH ME
               <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </a>
           </motion.div>
