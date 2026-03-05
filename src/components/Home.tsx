@@ -62,10 +62,10 @@ const SectionHeading = ({ children, subtitle }: { children: React.ReactNode, sub
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<{ url: string, title?: string } | null>(null);
+  const dynamicSettings = INITIAL_DATA.settings;
   const [dynamicImages] = useState<any[]>(INITIAL_DATA.images);
   const [dynamicExperiences] = useState<any[]>(INITIAL_DATA.experience);
   const [dynamicSkills] = useState<any[]>(INITIAL_DATA.skills);
-  const [dynamicSettings] = useState<any>(INITIAL_DATA.settings);
   const [achievementIndex, setAchievementIndex] = useState(0);
   const [contentIndex, setContentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
@@ -100,7 +100,7 @@ export default function Home() {
   };
 
   const getImageUrl = (filename: string) => {
-    if (!filename) return "/images/profile.png";
+    if (!filename || filename === "profile.png") return "/images/profile.png";
     // If it's already a full URL, return it
     if (filename.startsWith("http")) return filename;
     // Otherwise, assume it's in our images folder
@@ -191,7 +191,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <img 
-              src={getImageUrl(dynamicSettings.about_image)} 
+              src="/images/profile.png" 
               alt="Logo" 
               className="w-10 h-10 object-cover rounded-full border border-emerald-500/30"
               referrerPolicy="no-referrer"
@@ -301,7 +301,7 @@ export default function Home() {
               <div className="absolute -inset-4 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-1000"></div>
               <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border border-white/10 glass p-2">
                 <img 
-                  src={getImageUrl(dynamicSettings.about_image)} 
+                  src="/images/profile.png" 
                   alt="Abdul Wasay" 
                   className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700"
                   referrerPolicy="no-referrer"
