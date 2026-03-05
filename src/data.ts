@@ -8,7 +8,7 @@ export const INITIAL_DATA = {
     instagram: "",
     whatsapp: "",
     about_text: "I am a results-driven marketing professional with expertise in brand strategy, digital growth, and multi-industry management. With over 5 years of experience, I've specialized in building scalable brands across tech, skincare, hospitality, and services through data-driven marketing solutions.",
-    about_image: "profile.png"
+    about_image: "https://drive.google.com/uc?export=view&id=15DxoB3afE3wEvSqZ-gt8Bg43vRe2pT1G"
   },
   skills: [
     { id: 1, name: "Brand Management" },

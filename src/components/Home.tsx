@@ -665,21 +665,45 @@ export default function Home() {
               </div>
             </div>
             
-            <form className="glass p-8 rounded-2xl space-y-6" onSubmit={(e) => {
-              e.preventDefault();
-              alert("Thank you for your message! I will get back to you soon.");
-            }}>
+            <form 
+              action={`https://formsubmit.co/${dynamicSettings.email || "wasey351@gmail.com"}`} 
+              method="POST"
+              className="glass p-8 rounded-2xl space-y-6"
+            >
+              {/* Honeypot for spam protection */}
+              <input type="text" name="_honey" style={{ display: 'none' }} />
+              {/* Disable captcha for smoother experience */}
+              <input type="hidden" name="_captcha" value="false" />
+              
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-widest text-white/40">Name</label>
-                <input type="text" className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors" placeholder="John Doe" required />
+                <input 
+                  name="name"
+                  type="text" 
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors" 
+                  placeholder="John Doe" 
+                  required 
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-widest text-white/40">Email</label>
-                <input type="email" className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors" placeholder="john@example.com" required />
+                <input 
+                  name="email"
+                  type="email" 
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors" 
+                  placeholder="john@example.com" 
+                  required 
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-widest text-white/40">Message</label>
-                <textarea rows={4} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors" placeholder="How can I help you?" required />
+                <textarea 
+                  name="message"
+                  rows={4} 
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors" 
+                  placeholder="How can I help you?" 
+                  required 
+                />
               </div>
               <button type="submit" className="w-full py-4 bg-emerald-500 text-black font-bold rounded-lg hover:bg-emerald-400 transition-all">
                 SEND MESSAGE
